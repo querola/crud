@@ -7,6 +7,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using DM2.Models;
+using PagedList;
 
 namespace DM2.Controllers
 {
@@ -15,12 +16,63 @@ namespace DM2.Controllers
         private ApplicationDbContext db = new ApplicationDbContext();
 
         // GET: Articles
-        public ActionResult Index()
+        public ViewResult Index(string sortOrder, string currentFilter, string searchString, int? page)
         {
-           
-            var articles = db.Articles.Include(a => a.Sections).Include(a => a.Users).OrderByDescending(x => x.Fecha);
-            return View(articles.ToList());
+
+            var idarticles = db.Articles.OrderByDescending(x => x.Id).ToString();
+
+            ViewBag.CurrentSort = sortOrder;
+            ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "Nombre" : "";
+            ViewBag.DateSortParm = sortOrder == "Fecha" ? "Fecha" : "Fecha";
+            ViewBag.IdSortParm = idarticles == null ? "" : idarticles;
+
+            if (searchString != null)
+            {
+                page = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewBag.CurrentFilter = searchString;
+
+            var articles = from s in db.Articles
+                           select s;
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                articles = articles.Where(s => s.Nombre.Contains(searchString));
+            }
+
+            switch (sortOrder)
+            {
+                case "Nombre":
+                    articles = articles.OrderByDescending(s => s.Nombre);
+                    break;
+                case "Fecha":
+                    articles = articles.OrderByDescending(s => s.Fecha);
+                    break;
+                //case "Id":
+                //    articles = articles.OrderByDescending(s => s.Id);
+                //break;
+                default:
+                    articles = articles.Include(a => a.Sections).Include(a => a.Users).OrderByDescending(x => x.Fecha);
+                    break;
+            }
+
+            int pageSize = 3;
+            int pageNumber = (page ?? 1);
+            return View(articles.ToPagedList(pageNumber, pageSize));
+
+            //return View(articles.ToList());
         }
+        //public ActionResult Index()
+        //{
+
+        //    var articles = db.Articles.Include(a => a.Sections).Include(a => a.Users).OrderByDescending(x => x.Fecha);
+        //    return View(articles.ToList());
+        //}
 
         // GET: Articles/Details/5
         public ActionResult Details(int? id)
