@@ -1,0 +1,33 @@
+﻿@model IEnumerable<DM2.Models.Sections>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Secciones</h2>
+
+<p>
+    @Html.ActionLink("Agregar una sección", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Nombre)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Nombre)
+        </td>
+        <td>
+            @Html.ActionLink("Editar", "Edit", new { id=item.IdSection }) |
+            @Html.ActionLink("Más", "Details", new { id=item.IdSection }) |
+            @Html.ActionLink("Eliminar", "Delete", new { id=item.IdSection })
+        </td>
+    </tr>
+}
+
+</table>

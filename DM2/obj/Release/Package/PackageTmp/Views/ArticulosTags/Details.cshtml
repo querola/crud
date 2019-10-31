@@ -1,0 +1,34 @@
+﻿@model DM2.Models.ArticulosTag
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>ArticulosTag</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Tags.NombreTag)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Tags.NombreTag)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.IdArticle)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.IdArticle)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.IdArtTag }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>
