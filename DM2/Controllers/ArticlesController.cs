@@ -61,7 +61,7 @@ namespace DM2.Controllers
                     break;
             }
 
-            int pageSize = 3;
+            int pageSize = 10;
             int pageNumber = (page ?? 1);
             return View(articles.ToPagedList(pageNumber, pageSize));
 
@@ -94,7 +94,6 @@ namespace DM2.Controllers
         {
             ViewBag.IdSection = new SelectList(db.Sections, "IdSection", "Nombre");
             ViewBag.IdUser = new SelectList(db.Users, "IdUser", "UserName");
-            ViewData["fecha"] = DateTime.Now.ToString("yyyy/MM/dd hh:mm");
             return View();
         }
 

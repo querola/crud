@@ -5,97 +5,92 @@
 }
 
 <h2>Nuevo artículo</h2>
-
+<link href="~/Styles/StyleSheet1.css" rel="stylesheet" />
 
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
 
-    <div class="form-horizontal">
-        <h4>Articles</h4>
-        <hr />
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        <div class="form-group">
-            @Html.LabelFor(model => model.URL, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.URL, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.URL, "", new { @class = "text-danger" })
-            </div>
-        </div>
+    <div class="row">
+        <div class="form-group form-inline">
+            <div class="col-md-4">
+                <div class="form-group form-group-100">
+                    @Html.LabelFor(model => model.URL, htmlAttributes: new { @class = "control-label label-100" })
+                    @Html.EditorFor(model => model.URL, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.URL, "", new { @class = "text-danger" })
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.Fecha, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Fecha, new { htmlAttributes = new { @Value = ViewData["fecha"], @class = "form-control datetimepicker" } })
-                @Html.ValidationMessageFor(model => model.Fecha, "", new { @class = "text-danger" })
+                </div>
             </div>
-        </div>
+            <div class="col-md-4">
+                <div class="form-group form-group-100">
+                    @Html.LabelFor(model => model.Nombre, htmlAttributes: new { @class = "control-label label-100" })
+                    @Html.EditorFor(model => model.Nombre, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Nombre, "", new { @class = "text-danger" })
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.Nombre, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Nombre, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Nombre, "", new { @class = "text-danger" })
+                </div>
             </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.Body, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.TextAreaFor(m => m.Body, new
-                {
-                    rows = "100s",
-                                style = "resize:none;width:400px;",
-                                placeholder = Html.DisplayNameFor(m => m.Body),
-                                @class = "form-control input-lg textarea-editor"
-                })
-                @Html.ValidationMessageFor(model => model.Body, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.ImgURL, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.ImgURL, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.ImgURL, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.IdUser, "IdUser", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownList("IdUser", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.IdUser, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.IdSection, "IdSection", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownList("IdSection", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.IdSection, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Create" class="btn btn-default" />
+            <div class="col-md-4">
+                <div class="form-group form-group-100">
+                    @Html.LabelFor(model => model.Fecha, htmlAttributes: new { @class = "control-label label-100" })
+                    @Html.EditorFor(model => model.Fecha, new { htmlAttributes = new { @Value = ViewData["fecha"], @class = "form-control datetimepicker" } })
+                    @Html.ValidationMessageFor(model => model.Fecha, "", new { @class = "text-danger" })
+                </div>
             </div>
         </div>
     </div>
-}
 
-<div>
-    @Html.ActionLink("Back to List", "Index")
-</div>
+    <div class="row">
+        <div class="form-group form-inline">
+            <div class="col-md-4">
+                <div class="form-group form-group-100">
+                    @Html.LabelFor(model => model.ImgURL, htmlAttributes: new { @class = "control-label label-100" })
+                    @Html.EditorFor(model => model.ImgURL, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.ImgURL, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group form-group-100">
+                    @Html.LabelFor(model => model.IdSection, "IdSection", htmlAttributes: new { @class = "control-label label-100" })
+                    @Html.DropDownList("IdSection", null, htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.IdSection, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group form-group-100">
+                    @Html.LabelFor(model => model.IdUser, "IdUser", htmlAttributes: new { @class = "control-label label-100" })
+                    @Html.DropDownList("IdUser", null, htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.IdUser, "", new { @class = "text-danger" })
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="form-group">
+                @Html.LabelFor(model => model.Body, htmlAttributes: new { @class = "control-label col-md-2" })
+                @*@Html.TextAreaFor(model => model.Body, new { htmlAttributes = new { @class = "form-control" } })*@
+                @Html.TextAreaFor(model => model.Body, 30, 40, htmlAttributes: new { style = "width: 100%; max-width: 100%;" })
+                <script src="~/Scripts/tinymce/tinymce.min.js"></script>
+                <script>tinymce.init({ selector: 'textarea' });</script>
+                @Html.ValidationMessageFor(model => model.Body, "", new { @class = "text-danger" })
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="row">
+            <div class="col-md-1 btn btn-danger">@Html.ActionLink("Regresar", "Index")</div>
+            @*<div class="col-md-1"><input type="submit" value="Regresar" class="btn btn-danger" /></div>*@
+            <div class="col-md-10"></div>
+            <div class="col-md-1"><input type="submit" value="Crear" class="btn btn-success" /></div>
+        </div>
+    </div>
+ }
+
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
-    @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/dateTimePicker")
-    @Styles.Render("~/Content/dateTimePicker1")
-    @Scripts.Render("~/bundles/script-custom-editor")
-    <link href="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.2/summernote.css" rel="stylesheet" />
-    <script src="~/Scripts/tinymce/tiny_mce.js"></script>
-    <script src="~/Scripts/main.js"></script>
 }
