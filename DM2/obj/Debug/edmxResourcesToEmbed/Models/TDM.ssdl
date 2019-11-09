@@ -1,0 +1,138 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="TDMModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="__MigrationHistory">
+    <Key>
+      <PropertyRef Name="MigrationId" />
+      <PropertyRef Name="ContextKey" />
+    </Key>
+    <Property Name="MigrationId" Type="nvarchar" MaxLength="150" Nullable="false" />
+    <Property Name="ContextKey" Type="nvarchar" MaxLength="300" Nullable="false" />
+    <Property Name="Model" Type="varbinary(max)" Nullable="false" />
+    <Property Name="ProductVersion" Type="nvarchar" MaxLength="32" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Articles">
+    <Key>
+      <PropertyRef Name="IdArticle" />
+    </Key>
+    <Property Name="IdArticle" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="URL" Type="nvarchar" MaxLength="100" />
+    <Property Name="Fecha" Type="datetime" Nullable="false" />
+    <Property Name="Nombre" Type="nvarchar" MaxLength="100" />
+    <Property Name="Body" Type="nvarchar(max)" />
+    <Property Name="ImgURL" Type="nvarchar(max)" />
+    <Property Name="IdUser" Type="int" Nullable="false" />
+    <Property Name="IdSection" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="ArticuloTag">
+    <Key>
+      <PropertyRef Name="IdTag" />
+      <PropertyRef Name="IdArticle" />
+    </Key>
+    <Property Name="IdTag" Type="int" Nullable="false" />
+    <Property Name="IdArticle" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Sections">
+    <Key>
+      <PropertyRef Name="IdSection" />
+    </Key>
+    <Property Name="IdSection" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Nombre" Type="nvarchar" MaxLength="50" />
+  </EntityType>
+  <EntityType Name="Tags">
+    <Key>
+      <PropertyRef Name="IdTag" />
+    </Key>
+    <Property Name="IdTag" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="NombreTag" Type="nvarchar" MaxLength="30" />
+  </EntityType>
+  <EntityType Name="Users">
+    <Key>
+      <PropertyRef Name="IdUser" />
+    </Key>
+    <Property Name="IdUser" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="UserName" Type="nvarchar" MaxLength="70" />
+    <Property Name="Nombre" Type="nvarchar" MaxLength="50" />
+    <Property Name="Apellido" Type="nvarchar" MaxLength="50" />
+    <Property Name="ImagenURL" Type="nvarchar" MaxLength="100" />
+  </EntityType>
+  <Association Name="FK_dbo_Articles_dbo_Sections_IdSection">
+    <End Role="Sections" Type="Self.Sections" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Articles" Type="Self.Articles" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Sections">
+        <PropertyRef Name="IdSection" />
+      </Principal>
+      <Dependent Role="Articles">
+        <PropertyRef Name="IdSection" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_dbo_Articles_dbo_Users_IdUser">
+    <End Role="Users" Type="Self.Users" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Articles" Type="Self.Articles" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Users">
+        <PropertyRef Name="IdUser" />
+      </Principal>
+      <Dependent Role="Articles">
+        <PropertyRef Name="IdUser" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_dbo_ArticuloTag_dbo_Articles_IdArticle">
+    <End Role="Articles" Type="Self.Articles" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="ArticuloTag" Type="Self.ArticuloTag" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Articles">
+        <PropertyRef Name="IdArticle" />
+      </Principal>
+      <Dependent Role="ArticuloTag">
+        <PropertyRef Name="IdArticle" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_dbo_ArticuloTag_dbo_Tags_IdTag">
+    <End Role="Tags" Type="Self.Tags" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="ArticuloTag" Type="Self.ArticuloTag" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Tags">
+        <PropertyRef Name="IdTag" />
+      </Principal>
+      <Dependent Role="ArticuloTag">
+        <PropertyRef Name="IdTag" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="TDMModelStoreContainer">
+    <EntitySet Name="__MigrationHistory" EntityType="Self.__MigrationHistory" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Articles" EntityType="Self.Articles" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="ArticuloTag" EntityType="Self.ArticuloTag" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Sections" EntityType="Self.Sections" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Tags" EntityType="Self.Tags" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Users" EntityType="Self.Users" Schema="dbo" store:Type="Tables" />
+    <AssociationSet Name="FK_dbo_Articles_dbo_Sections_IdSection" Association="Self.FK_dbo_Articles_dbo_Sections_IdSection">
+      <End Role="Sections" EntitySet="Sections" />
+      <End Role="Articles" EntitySet="Articles" />
+    </AssociationSet>
+    <AssociationSet Name="FK_dbo_Articles_dbo_Users_IdUser" Association="Self.FK_dbo_Articles_dbo_Users_IdUser">
+      <End Role="Users" EntitySet="Users" />
+      <End Role="Articles" EntitySet="Articles" />
+    </AssociationSet>
+    <AssociationSet Name="FK_dbo_ArticuloTag_dbo_Articles_IdArticle" Association="Self.FK_dbo_ArticuloTag_dbo_Articles_IdArticle">
+      <End Role="Articles" EntitySet="Articles" />
+      <End Role="ArticuloTag" EntitySet="ArticuloTag" />
+    </AssociationSet>
+    <AssociationSet Name="FK_dbo_ArticuloTag_dbo_Tags_IdTag" Association="Self.FK_dbo_ArticuloTag_dbo_Tags_IdTag">
+      <End Role="Tags" EntitySet="Tags" />
+      <End Role="ArticuloTag" EntitySet="ArticuloTag" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

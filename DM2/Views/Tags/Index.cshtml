@@ -1,0 +1,37 @@
+﻿@model IEnumerable<DM2.Models.Tags>
+
+@{
+    ViewBag.Title = "Index";
+}
+<link href="~/Styles/StyleSheet1.css" rel="stylesheet" />
+<head>
+    <div class="log">@Html.Partial("_LoginPartial")</div>
+</head>
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.NombreTag)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.NombreTag)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.IdTag }) |
+                @Html.ActionLink("Details", "Details", new { id = item.IdTag }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.IdTag })
+            </td>
+        </tr>
+    }
+
+</table>

@@ -1,0 +1,29 @@
+﻿@model DM2.Models.Tags
+
+@{
+    ViewBag.Title = "Details";
+}
+<link href="~/Styles/StyleSheet1.css" rel="stylesheet" />
+<head>
+    <div class="log">@Html.Partial("_LoginPartial")</div>
+</head>
+<h2>Details</h2>
+
+<div>
+    <h4>Tags</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.NombreTag)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.NombreTag)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.IdTag }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>
