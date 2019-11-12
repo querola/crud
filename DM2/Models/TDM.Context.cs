@@ -18,7 +18,7 @@ namespace DM2.Models
         public TDMEntities()
             : base("name=TDMEntities")
         {
-            Database.SetInitializer<ApplicationDbContext>(new CreateDatabaseIfNotExists<ApplicationDbContext>());
+            //Database.SetInitializer<ApplicationDbContext>(new CreateDatabaseIfNotExists<ApplicationDbContext>());
         }
     
         protected override void OnModelCreating(DbModelBuilder modelBuilder)

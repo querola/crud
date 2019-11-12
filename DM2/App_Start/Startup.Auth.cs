@@ -54,9 +54,9 @@ namespace DM2
             //   consumerKey: "",
             //   consumerSecret: "");
 
-            app.UseFacebookAuthentication(
-               appId: "2575213666035351",
-               appSecret: "fccaae42a2199dc6f7c7d08ccc74f794");
+            //app.UseFacebookAuthentication(
+            //   appId: "",
+            //   appSecret: "");
 
             //app.UseGoogleAuthentication(new GoogleOAuth2AuthenticationOptions()
             //{

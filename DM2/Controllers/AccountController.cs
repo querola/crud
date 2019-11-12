@@ -9,10 +9,13 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using DM2.Models;
+using System.Collections.Generic;
+using Microsoft.AspNet.Identity.EntityFramework;
+using System.Net;
 
 namespace DM2.Controllers
 {
-    [Authorize]
+    //[Authorize]
     public class AccountController : Controller
     {
         private ApplicationSignInManager _signInManager;
@@ -68,6 +71,8 @@ namespace DM2.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Login(LoginViewModel model, string returnUrl)
         {
+            ModelState.Remove("RememberMe");
+
             if (!ModelState.IsValid)
             {
                 return View(model);
@@ -79,7 +84,20 @@ namespace DM2.Controllers
             switch (result)
             {
                 case SignInStatus.Success:
-                    return RedirectToLocal(returnUrl);
+            //return RedirectToLocal(returnUrl);
+                using (ApplicationDbContext db = new ApplicationDbContext())
+                {
+                var userManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(db));
+                var IdUser = await userManager.FindByEmailAsync(model.Email);
+
+                if (userManager.IsInRole(IdUser.Id, "Admin"))
+                    return RedirectToAction("Index", "Home");
+                else if (userManager.IsInRole(IdUser.Id, "Escritor"))
+                    return RedirectToAction("Index", "Articles");
+                }
+
+                
+                    return RedirectToAction("Index","Home", new { verifiAction = "NewLogin" });
                 case SignInStatus.LockedOut:
                     return View("Lockout");
                 case SignInStatus.RequiresVerification:
@@ -88,6 +106,44 @@ namespace DM2.Controllers
                 default:
                     ModelState.AddModelError("", "Intento de inicio de sesión no válido.");
                     return View(model);
+            }
+        }
+
+        // POST: /Account/LoginAdmin
+        [HttpPost]
+        [Authorize]
+        //[ValidateAntiForgeryToken]
+        public async Task<JsonResult> LoginAdmin(LoginAdminViewModel model)
+        {
+            ApplicationDbContext db = new ApplicationDbContext();
+            object obj = null;
+
+            ModelState.Remove("RememberMe");
+            ModelState.Remove("Email");
+
+            var usermanager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(db));
+            var user = await usermanager.FindByIdAsync(User.Identity.GetUserId());
+
+            model.Email = user.Email;
+
+            if (!ModelState.IsValid)
+            {
+                obj = new { Success = "false", Error = "¡Ups! Hubo un error inesperado." };
+                return Json(obj, JsonRequestBehavior.AllowGet);
+            }
+
+            // No cuenta los errores de inicio de sesión para el bloqueo de la cuenta
+            // Para permitir que los errores de contraseña desencadenen el bloqueo de la cuenta, cambie a shouldLockout: true
+            var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, true, shouldLockout: false);
+            switch (result)
+            {
+                case SignInStatus.Success:
+                    obj = new { Success = "true", Error = string.Empty };
+                    return Json(obj, JsonRequestBehavior.AllowGet);
+                case SignInStatus.Failure:
+                default:
+                    obj = new { Success = "false", Error = "Intento de inicio de sesión no válido." };
+                    return Json(obj, JsonRequestBehavior.AllowGet);
             }
         }
 
@@ -136,16 +192,25 @@ namespace DM2.Controllers
 
         //
         // GET: /Account/Register
-        [AllowAnonymous]
+        [Authorize(Roles = "Admin")]
         public ActionResult Register()
         {
-            return View();
+            
+            var items = new List<SelectListItem> {
+                new SelectListItem { Text = "Administrador", Value = "Admin" },
+                new SelectListItem { Text = "Escritor", Value = "Escritor"},
+                
+            };
+
+                ViewBag.Roles = items;
+
+                return View();
         }
 
         //
         // POST: /Account/Register
         [HttpPost]
-        [AllowAnonymous]
+        [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Register(RegisterViewModel model)
         {
@@ -155,21 +220,43 @@ namespace DM2.Controllers
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
+                    using (ApplicationDbContext db = new ApplicationDbContext())
+                    {
+                        var _roleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(db));
+                        var _UserManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(db));
+
+                        var userfound = await _UserManager.FindByEmailAsync(model.Email);
+
+                        var rpt = await _UserManager.AddToRoleAsync(userfound.Id, model.Rol);
+
+                        if (rpt.Errors.Any())
+                            return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                    }
                     await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
-                    
+
                     // Para obtener más información sobre cómo habilitar la confirmación de cuentas y el restablecimiento de contraseña, visite https://go.microsoft.com/fwlink/?LinkID=320771
                     // Enviar correo electrónico con este vínculo
                     // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
                     // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
                     // await UserManager.SendEmailAsync(user.Id, "Confirmar cuenta", "Para confirmar la cuenta, haga clic <a href=\"" + callbackUrl + "\">aquí</a>");
 
-                    return RedirectToAction("Index", "Home");
+                    if (model.Rol == "Admin" || model.Rol == "Escritor")
+                        return RedirectToAction("Index", "Home", new { verfiAction = "NewLogin" });
+                    
                 }
                 AddErrors(result);
             }
 
             // Si llegamos a este punto, es que se ha producido un error y volvemos a mostrar el formulario
-            return View(model);
+            var items = new List<SelectListItem> {
+                new SelectListItem { Text = "Administrador", Value = "Admin" },
+                new SelectListItem { Text = "Escritor", Value = "Escritor"},
+
+            };
+
+                ViewBag.Roles = items;
+
+                return View(model);
         }
 
         //
@@ -211,10 +298,10 @@ namespace DM2.Controllers
 
                 // Para obtener más información sobre cómo habilitar la confirmación de cuentas y el restablecimiento de contraseña, visite https://go.microsoft.com/fwlink/?LinkID=320771
                 // Enviar correo electrónico con este vínculo
-                // string code = await UserManager.GeneratePasswordResetTokenAsync(user.Id);
-                // var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);		
-                // await UserManager.SendEmailAsync(user.Id, "Restablecer contraseña", "Para restablecer la contraseña, haga clic <a href=\"" + callbackUrl + "\">aquí</a>");
-                // return RedirectToAction("ForgotPasswordConfirmation", "Account");
+                 string code = await UserManager.GeneratePasswordResetTokenAsync(user.Id);
+                 var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);		
+                 await UserManager.SendEmailAsync(user.Id, "Restablecer contraseña", "Para restablecer la contraseña, haga clic <a href=\"" + callbackUrl + "\">aquí</a>");
+                 return RedirectToAction("ForgotPasswordConfirmation", "Account");
             }
 
             // Si llegamos a este punto, es que se ha producido un error y volvemos a mostrar el formulario

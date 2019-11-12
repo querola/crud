@@ -10,7 +10,7 @@ using DM2.Models;
 
 namespace DM2.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Administrador")]
     public class ManageController : Controller
     {
         private ApplicationSignInManager _signInManager;

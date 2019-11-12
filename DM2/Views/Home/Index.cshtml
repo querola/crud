@@ -1,11 +1,35 @@
-﻿@{
+﻿@using Microsoft.AspNet.Identity;
+@using Microsoft.AspNet.Identity.EntityFramework;
+@using DM2.Models;
+@{
     ViewBag.Title = "Home Page";
 }
 
-<link href="~/Styles/StyleSheet1.css" rel="stylesheet" />
+
+    <link href="~/Styles/StyleSheet1.css" rel="stylesheet" />
 <head>
+    @{
+        if (User.Identity.IsAuthenticated)
+        {
+            using (ApplicationDbContext db = new ApplicationDbContext())
+            {
+                var IdUser = User.Identity.GetUserId();
+                var userManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(db));
+
+                if (userManager.IsInRole(IdUser, "Admin"))
+                {
+
+                    <div class="log"><button class="btn boton-inicio" onclick="location.href='@Url.Action("Register", "Account")'">Crear un Nuevo Usuario</button></div>
+
+                }
+            }
+        }
+    }
+
+    @*<div class="log">@Html.ActionLink("Crear un nuevo Usuario", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })</div>*@
     <div class="log">@Html.Partial("_LoginPartial")</div>
 </head>
+
 <div class="jumbotron">
     <h1>ASP.NET</h1>
     <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
